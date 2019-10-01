@@ -2,7 +2,6 @@
 # coding: utf-8
 
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.io import ascii
@@ -116,27 +115,31 @@ class Huglin_Index():
         self.huglin_dataset = xr.DataArray(data=self.huglin_index, dims=["lat", "lon"], coords=[self.lat,self.lon])
         
         lat_array_indexes= []
-        lat0 = 40
-        for i in range(0,11,2):
-            tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-180,method='nearest').lat.data )
-            lat_array_indexes.append(int(np.where(self.lat==tmp)[0]))
+        if self.hemisphere == "N":
+            lat0 = 40
+            for i in range(0,11,2):
+                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-180,method='nearest').lat.data )
+                lat_array_indexes.append(int(np.where(self.lat==tmp)[0]))
+        else:
+            lat0 = -40
+            for i in range(0,-11,-2):
+                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-180,method='nearest').lat.data )
+                lat_array_indexes.append(int(np.where(self.lat==tmp)[0]))
 
-
+        
+        
         k=[1.02,1.03,1.04,1.05,1.06]    
         for i in range(len(lat_array_indexes)-1):
             for j in range(lat_array_indexes[i+1] - lat_array_indexes[i]):
                 self.huglin_dataset[lat_array_indexes[i] + j] = self.huglin_dataset[lat_array_indexes[i] + j] * k[i]
-                pointer_to_row_latitude = self.huglin_dataset[lat_array_indexes[i] + j]
-                pointer_to_row_latitude[self.huglin_dataset[lat_array_indexes[i] + j] < no_data_value] = no_data_value
-        
+                #pointer_to_row_latitude = self.huglin_dataset[lat_array_indexes[i] + j]
+                #pointer_to_row_latitude[self.huglin_dataset[lat_array_indexes[i] + j] < no_data_value] = no_data_value
         
         
         self.huglin_max = np.amax(self.huglin_dataset.data)
         self.huglin_dataset.data[self.huglin_dataset < no_data_value] = no_data_value
 
         self.huglin_min = np.amin(self.huglin_dataset.data[self.huglin_dataset != np.amin(self.huglin_dataset)])
-        print(self.huglin_min)
-        print(self.huglin_max)
 
         
         return self.huglin_dataset
@@ -156,10 +159,12 @@ class Huglin_Index():
     
     def return_huglin_index_from_lat_lon(self, lat, lon):
         return self.huglin_dataset.sel(lat=lat,lon=lon,method='nearest')
+                
 
 
 
-north_hem_huglin = Huglin_Index("N",no_data_value)
+
+north_hem_huglin = Huglin_Index("S",no_data_value)
 #south_hem_huglin = Huglin_Index("S",no_data_value)
 
 
@@ -177,43 +182,5 @@ north_hem_huglin_index = north_hem_huglin_index_object.data
 
 
 
-print("North Hemisphere")
-print(north_hem_huglin_index.shape)
-north_huglin_max_value = np.amax(north_hem_huglin_index[north_hem_huglin_index != np.amax(north_hem_huglin_index)])
-
-
-north_huglin_min_value = np.amin(north_hem_huglin_index)
-print(north_huglin_min_value)
-north_hem_huglin_index[north_hem_huglin_index < no_data_value] = no_data_value
-print(north_hem_huglin_index)
-
-
-north_huglin_min_value = np.amin(north_hem_huglin_index[north_hem_huglin_index != np.amin(north_hem_huglin_index)])
-print(north_huglin_min_value)
-print(north_huglin_max_value)
-
-
-# print("South Hemisphere")
-
-# print(south_hem_huglin_index.shape)
-# south_huglin_max_value = np.amax(south_hem_huglin_index[south_hem_huglin_index != np.amax(south_hem_huglin_index)])
-
-
-# south_huglin_min_value = np.amin(south_hem_huglin_index)
-# print(south_huglin_min_value)
-# south_hem_huglin_index[south_hem_huglin_index < no_data_value] = no_data_value
-# print(south_hem_huglin_index)
-
-
-# south_huglin_min_value = np.amin(south_hem_huglin_index[south_hem_huglin_index != np.amin(south_hem_huglin_index)])
-# print(south_huglin_min_value)
-# print(south_huglin_max_value)
-
-
-
 north_hem_huglin.show_map()
 north_hem_huglin.return_huglin_index_from_lat_lon(13,-40)
-
-
-
-
