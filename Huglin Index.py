@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from astropy.io import ascii
 
 import rasterio
 from rasterio import plot
+
+from osgeo import ogr, osr, gdal
 
 get_ipython().run_line_magic('matplotlib', 'inline')
 import earthpy as et
@@ -159,8 +160,27 @@ class Huglin_Index():
     
     def return_huglin_index_from_lat_lon(self, lat, lon):
         return self.huglin_dataset.sel(lat=lat,lon=lon,method='nearest')
-                
+    
+    
+    def CreateGeoTiff(self, outRaster):
+        data = []
+        data.append(self.huglin_index)
+        data.extend(self.temp_mean_list)
+        data.extend(self.temp_max_list)
+        data = np.array(data)
+        
+        driver = gdal.GetDriverByName('GTiff')
+        no_bands, width, height = data.shape
+        print(no_bands, width,height)
+        DataSet = driver.Create(outRaster, height, width, no_bands, gdal.GDT_Float64)
+        DataSet.SetGeoTransform([-180,0.1666666666667,0,-60,0,0.1666666666667])
 
+        for i, image in enumerate(data, 1):
+            print(i)
+            DataSet.GetRasterBand(i).WriteArray(image)
+        DataSet = None
+       
+       return
 
 
 
@@ -184,3 +204,7 @@ north_hem_huglin_index = north_hem_huglin_index_object.data
 
 north_hem_huglin.show_map()
 north_hem_huglin.return_huglin_index_from_lat_lon(13,-40)
+
+
+
+north_hem_huglin.CreateGeoTiff("./Huglin_Index_Mean_Max_Temps.tiff")
