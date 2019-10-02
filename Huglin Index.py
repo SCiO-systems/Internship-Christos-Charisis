@@ -171,12 +171,10 @@ class Huglin_Index():
         
         driver = gdal.GetDriverByName('GTiff')
         no_bands, width, height = data.shape
-        print(no_bands, width,height)
         DataSet = driver.Create(outRaster, height, width, no_bands, gdal.GDT_Float64)
         DataSet.SetGeoTransform([-180,0.1666666666667,0,-60,0,0.1666666666667])
 
         for i, image in enumerate(data, 1):
-            print(i)
             DataSet.GetRasterBand(i).WriteArray(image)
         DataSet = None
        
@@ -184,6 +182,11 @@ class Huglin_Index():
 
 
 
+    
+    
+    
+    
+    
 north_hem_huglin = Huglin_Index("S",no_data_value)
 #south_hem_huglin = Huglin_Index("S",no_data_value)
 
