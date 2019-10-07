@@ -10,7 +10,7 @@ from rasterio import plot
 
 from osgeo import ogr, osr, gdal
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+#get_ipython().run_line_magic('matplotlib', 'inline')
 import earthpy as et
 import earthpy.plot as ep
 import copy
@@ -180,31 +180,32 @@ class Huglin_Index():
             DataSet.GetRasterBand(i).WriteArray(image)
         DataSet = None
        
-       return
+        return
 
 
 
-north_hem_huglin = Huglin_Index("S",no_data_value)
-#south_hem_huglin = Huglin_Index("S",no_data_value)
+north_hem_huglin = Huglin_Index("N",no_data_value)
+south_hem_huglin = Huglin_Index("S",no_data_value)
 
 
 
 north_hem_huglin.get_data(path_to_temp_mean_folder,path_to_temp_max_folder)
-#south_hem_huglin.get_data(path_to_temp_mean_folder,path_to_temp_max_folder)
+south_hem_huglin.get_data(path_to_temp_mean_folder,path_to_temp_max_folder)
 
 
 
 north_hem_huglin_index_object = north_hem_huglin.calculate_index()
-#south_hem_huglin_index_object = south_hem_huglin.calculate_index()
+south_hem_huglin_index_object = south_hem_huglin.calculate_index()
 
 north_hem_huglin_index = north_hem_huglin_index_object.data
-#south_hem_huglin_index = south_hem_huglin_index_object.data
+south_hem_huglin_index = south_hem_huglin_index_object.data
 
 
 
 north_hem_huglin.show_map()
 north_hem_huglin.return_huglin_index_from_lat_lon(13,-40)
 
-
+south_hem_huglin.show_map()
+south_hem_huglin.return_huglin_index_from_lat_lon(13,-40)
 
 north_hem_huglin.CreateGeoTiff("./Huglin_Index_Mean_Max_Temps.tiff")
