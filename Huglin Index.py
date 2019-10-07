@@ -182,19 +182,10 @@ class Huglin_Index():
 
 
 
-<<<<<<< HEAD
 north_hem_huglin = Huglin_Index("N",no_data_value)
 south_hem_huglin = Huglin_Index("S",no_data_value)
-=======
-    
-    
-    
-    
-    
-north_hem_huglin = Huglin_Index("S",no_data_value)
-#south_hem_huglin = Huglin_Index("S",no_data_value)
->>>>>>> 79a5670ff1ddadd01d26f954b66899b1ecf856fe
 
+  
 
 
 north_hem_huglin.get_data(path_to_temp_mean_folder,path_to_temp_max_folder)
