@@ -108,10 +108,10 @@ class Huglin_Index():
                 month += 1
                 
         
-        
+                
         x,y = self.huglin_index.shape
-        self.lat = np.linspace(-90, 90, x)
-        self.lon = np.linspace(-180, 180, y)
+        self.lat = np.linspace(-180, 180, x)
+        self.lon = np.linspace(-90, 90, y)
 
         self.huglin_dataset = xr.DataArray(data=self.huglin_index, dims=["lat", "lon"], coords=[self.lat,self.lon])
         
@@ -119,12 +119,12 @@ class Huglin_Index():
         if self.hemisphere == "N":
             lat0 = 40
             for i in range(0,11,2):
-                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-180,method='nearest').lat.data )
+                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-90,method='nearest').lat.data )
                 lat_array_indexes.append(int(np.where(self.lat==tmp)[0]))
         else:
             lat0 = -40
             for i in range(0,-11,-2):
-                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-180,method='nearest').lat.data )
+                tmp = float(self.huglin_dataset.sel(lat=lat0 + i,lon=-90,method='nearest').lat.data )
                 lat_array_indexes.append(int(np.where(self.lat==tmp)[0]))
 
         
